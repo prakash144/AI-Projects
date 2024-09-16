@@ -23,7 +23,6 @@ const dietOptions: DietOption[] = [
 ];
 
 const generateMealCards = (numberOfMeals: number) => {
-    // Example meal data, you can customize it
     const exampleMeals = [
         { name: "Rice", quantity: "1 bowl or 50g", calories: "120 kcal" },
         { name: "Roti", quantity: "2 pieces", calories: "120 kcal" },
@@ -68,16 +67,20 @@ const MealForm: React.FC = () => {
     };
 
     return (
-        <div className="p-6 min-h-screen bg-gray-100 dark:bg-gray-900">
-            <div className="flex flex-col md:flex-row md:space-x-8">
+        <div className="relative min-h-screen bg-gray-100 dark:bg-gray-900">
+            {/* Background Image */}
+            <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: 'url(/food-bg.jpg)' }}></div>
+
+            {/* Content Container */}
+            <div className="relative p-6 flex flex-col md:flex-row">
                 {/* Meal Form */}
-                <div className="flex-1 max-w-lg bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-300 dark:border-gray-700 p-6">
-                    <form className="space-y-6">
+                <div className="flex-1 max-w-md bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-300 dark:border-gray-700 p-6 overflow-auto z-10">
+                    <form className="space-y-4">
                         {/* Age */}
                         <label className="block">
                             <span className="text-gray-800 dark:text-gray-300 text-lg">Age</span>
                             <select
-                                className="mt-1 block w-full border-gray-300 dark:border-gray-600 rounded-md shadow-sm dark:bg-gray-700 dark:text-gray-200 text-lg py-3 px-4"
+                                className="mt-1 block w-full border-gray-300 dark:border-gray-600 rounded-md shadow-sm dark:bg-gray-700 dark:text-gray-200 text-lg py-2 px-3"
                                 value={age}
                                 onChange={(e) => setAge(e.target.value)}
                             >
@@ -94,7 +97,7 @@ const MealForm: React.FC = () => {
                         <label className="block">
                             <span className="text-gray-800 dark:text-gray-300 text-lg">Gender</span>
                             <select
-                                className="mt-1 block w-full border-gray-300 dark:border-gray-600 rounded-md shadow-sm dark:bg-gray-700 dark:text-gray-200 text-lg py-3 px-4"
+                                className="mt-1 block w-full border-gray-300 dark:border-gray-600 rounded-md shadow-sm dark:bg-gray-700 dark:text-gray-200 text-lg py-2 px-3"
                                 value={gender}
                                 onChange={(e) => setGender(e.target.value)}
                             >
@@ -109,7 +112,7 @@ const MealForm: React.FC = () => {
                         <label className="block">
                             <span className="text-gray-800 dark:text-gray-300 text-lg">Number of Meals</span>
                             <select
-                                className="mt-1 block w-full border-gray-300 dark:border-gray-600 rounded-md shadow-sm dark:bg-gray-700 dark:text-gray-200 text-lg py-3 px-4"
+                                className="mt-1 block w-full border-gray-300 dark:border-gray-600 rounded-md shadow-sm dark:bg-gray-700 dark:text-gray-200 text-lg py-2 px-3"
                                 value={numberOfMeals}
                                 onChange={(e) => setNumberOfMeals(e.target.value)}
                             >
@@ -127,7 +130,7 @@ const MealForm: React.FC = () => {
                         <label className="block">
                             <span className="text-gray-800 dark:text-gray-300 text-lg">Goal</span>
                             <select
-                                className="mt-1 block w-full border-gray-300 dark:border-gray-600 rounded-md shadow-sm dark:bg-gray-700 dark:text-gray-200 text-lg py-3 px-4"
+                                className="mt-1 block w-full border-gray-300 dark:border-gray-600 rounded-md shadow-sm dark:bg-gray-700 dark:text-gray-200 text-lg py-2 px-3"
                                 value={goal}
                                 onChange={(e) => setGoal(e.target.value as Goal)}
                             >
@@ -145,7 +148,7 @@ const MealForm: React.FC = () => {
                             <label className="block">
                                 <span className="text-gray-800 dark:text-gray-300 text-lg">Diet</span>
                                 <select
-                                    className="mt-1 block w-full border-gray-300 dark:border-gray-600 rounded-md shadow-sm dark:bg-gray-700 dark:text-gray-200 text-lg py-3 px-4"
+                                    className="mt-1 block w-full border-gray-300 dark:border-gray-600 rounded-md shadow-sm dark:bg-gray-700 dark:text-gray-200 text-lg py-2 px-3"
                                     value={diet}
                                     onChange={(e) => setDiet(e.target.value as DietOption)}
                                 >
@@ -163,8 +166,8 @@ const MealForm: React.FC = () => {
                         <label className="block">
                             <span className="text-gray-800 dark:text-gray-300 text-lg">Food Allergies (if any)</span>
                             <textarea
-                                className="mt-1 block w-full border-gray-300 dark:border-gray-600 rounded-md shadow-sm dark:bg-gray-700 dark:text-gray-200 text-lg py-3 px-4"
-                                rows={3}
+                                className="mt-1 block w-full border-gray-300 dark:border-gray-600 rounded-md shadow-sm dark:bg-gray-700 dark:text-gray-200 text-lg py-2 px-3"
+                                rows={2}
                                 value={allergies}
                                 onChange={(e) => setAllergies(e.target.value)}
                             />
@@ -186,7 +189,7 @@ const MealForm: React.FC = () => {
                                 Reset
                             </button>
                             <button
-                                type="button"
+                                type="submit"
                                 className="flex items-center text-gray-500 hover:text-gray-600 dark:hover:text-gray-400"
                                 onClick={handleBackToHome}
                             >
@@ -198,15 +201,16 @@ const MealForm: React.FC = () => {
                 </div>
 
                 {/* Meal Cards */}
-                <div className="flex-1 mt-6 md:mt-0">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="flex-1 mt-6 md:mt-0 relative z-10">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-4">
                         {mealCards.map((card, index) => (
-                            <Card
-                                key={index}
-                                title={card.title}
-                                items={card.items}
-                                totalCalories={card.totalCalories}
-                            />
+                            <div key={index} className="transition-transform transform hover:scale-105">
+                                <Card
+                                    title={card.title}
+                                    items={card.items}
+                                    totalCalories={card.totalCalories}
+                                />
+                            </div>
                         ))}
                     </div>
                 </div>
