@@ -11,13 +11,13 @@ export default function Home() {
     return (
         <div className={darkMode ? "dark" : ""}>
             <div className="min-h-screen relative bg-white dark:bg-gray-900 transition-colors duration-500">
-                <header className="flex justify-between items-center p-5 bg-gradient-to-r from-green-400 via-blue-500 to-green-400 dark:from-gray-800 dark:to-gray-900 shadow-lg">
+                <header
+                    className="flex justify-between items-center p-5 bg-gradient-to-r from-green-400 via-blue-500 to-green-400 dark:from-gray-800 dark:to-gray-900 shadow-lg">
                     <h1 className="text-2xl font-extrabold text-gray-900 dark:text-white">Smart Diet Plan</h1>
                     <button
-                        onClick={() => setDarkMode(!darkMode)}
-                        className="p-2 bg-blue-600 text-white rounded-lg hover:bg-blue-500 transition"
-                    >
-                        {darkMode ? <Sun size={24} /> : <Moon size={24} />}
+                        className={`p-2 rounded-lg transition ${darkMode ? 'bg-yellow-500 hover:bg-yellow-400' : 'bg-blue-600 hover:bg-blue-500'} text-white`}
+                        onClick={() => setDarkMode(!darkMode)}>
+                        {darkMode ? <Sun size={24}/> : <Moon size={24}/>}
                     </button>
                 </header>
 
