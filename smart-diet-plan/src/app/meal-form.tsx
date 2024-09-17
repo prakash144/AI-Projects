@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import Card from "./meal-card";
+import { generateMealPlan } from "@/app/api/openai";
 
 type Goal = "Lose Weight" | "To be Healthy" | "Gain Muscle";
 type DietOption = "Mediterranean Diet" | "Ketogenic (Keto) Diet" | "Paleo" | "Vegetarian Diet" | "Gluten-Free Diet" | "Low Carb Diet";
@@ -22,19 +23,18 @@ const dietOptions: DietOption[] = [
     "Low Carb Diet",
 ];
 
-const generateMealCards = (numberOfMeals: number) => {
-    const exampleMeals = [
-        { name: "Rice", quantity: "1 bowl or 50g", calories: "120 kcal" },
-        { name: "Roti", quantity: "2 pieces", calories: "120 kcal" },
-        { name: "Paneer", quantity: "30 gm", calories: "100 kcal" }
-    ];
+// const calorieRanges: Record<Goal, [number, number]> = {
+//     "Lose Weight": [1200, 1500],
+//     "To be Healthy": [1800, 2200],
+//     "Gain Muscle": [2500, 3000],
+// };
 
-    return Array.from({ length: numberOfMeals }, (_, i) => ({
-        title: `Meal ${i + 1}`,
-        items: exampleMeals,
-        totalCalories: "340 kcal"  // Example total calories
-    }));
-};
+// Define the type for each meal
+interface Meal {
+    title: string;
+    items: { name: string; quantity: string; calories: string }[];
+    totalCalories: string;
+}
 
 const MealForm: React.FC = () => {
     const [age, setAge] = useState("");
@@ -43,7 +43,8 @@ const MealForm: React.FC = () => {
     const [goal, setGoal] = useState<Goal | "">("");
     const [diet, setDiet] = useState<DietOption | "">("");
     const [allergies, setAllergies] = useState("");
-    const [mealCards, setMealCards] = useState<any[]>([]);
+    const [mealCards, setMealCards] = useState<Meal[]>([]);
+    const [loading, setLoading] = useState(false);
     const router = useRouter();
 
     const handleReset = () => {
@@ -56,9 +57,25 @@ const MealForm: React.FC = () => {
         setMealCards([]);
     };
 
-    const handleGenerate = () => {
-        if (numberOfMeals) {
-            setMealCards(generateMealCards(Number(numberOfMeals)));
+    const handleGenerate = async () => {
+        if (numberOfMeals && goal) {
+            setLoading(true);
+            try {
+                const response = await generateMealPlan({
+                    age,
+                    gender,
+                    numberOfMeals: Number(numberOfMeals),
+                    goal,
+                    diet,
+                    allergies,
+                });
+                setMealCards(response);
+            } catch (error) {
+                console.error("Error generating meal plan:", error);
+                // Handle error (e.g., show notification)
+            } finally {
+                setLoading(false);
+            }
         }
     };
 
@@ -104,7 +121,7 @@ const MealForm: React.FC = () => {
                                 <option value="">Select Gender</option>
                                 <option value="Male">Male</option>
                                 <option value="Female">Female</option>
-                                <option value="Other">Other</option>
+                                {/*<option value="Other">Other</option>*/}
                             </select>
                         </label>
 
@@ -178,8 +195,9 @@ const MealForm: React.FC = () => {
                                 type="button"
                                 className="py-2 px-4 bg-blue-500 text-white rounded-lg shadow-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
                                 onClick={handleGenerate}
+                                disabled={loading}
                             >
-                                Generate
+                                {loading ? "Generating..." : "Generate"}
                             </button>
                             <button
                                 type="button"
@@ -189,7 +207,7 @@ const MealForm: React.FC = () => {
                                 Reset
                             </button>
                             <button
-                                type="submit"
+                                type="button"
                                 className="flex items-center text-gray-500 hover:text-gray-600 dark:hover:text-gray-400"
                                 onClick={handleBackToHome}
                             >
@@ -202,15 +220,14 @@ const MealForm: React.FC = () => {
 
                 {/* Meal Cards */}
                 <div className="flex-1 mt-6 md:mt-0 relative z-10">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-4">
-                        {mealCards.map((card, index) => (
-                            <div key={index} className="transition-transform transform hover:scale-105">
-                                <Card
-                                    title={card.title}
-                                    items={card.items}
-                                    totalCalories={card.totalCalories}
-                                />
-                            </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {mealCards.map((meal, index) => (
+                            <Card
+                                key={index}
+                                title={meal.title}
+                                items={meal.items}
+                                totalCalories={meal.totalCalories}
+                            />
                         ))}
                     </div>
                 </div>

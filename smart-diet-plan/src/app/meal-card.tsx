@@ -1,4 +1,3 @@
-// src/app/card.tsx
 import React from "react";
 
 interface CardProps {
@@ -9,7 +8,7 @@ interface CardProps {
 
 const Card: React.FC<CardProps> = ({ title, items, totalCalories }) => {
     return (
-        <div className="p-4 bg-white dark:bg-gray-800 rounded-lg shadow-md border border-gray-300 dark:border-gray-700 transition-transform transform hover:scale-105 duration-300 ease-in-out">
+        <div className="p-4 bg-white dark:bg-gray-800 rounded-lg shadow-md border border-gray-300 dark:border-gray-700">
             <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-4">{title}</h2>
             <div className="space-y-3">
                 {items.map((item, index) => (
